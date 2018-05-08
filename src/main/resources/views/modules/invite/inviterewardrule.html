@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>奖励规则</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../../css/main.css">
+<script src="../../libs/jquery.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../libs/bootstrap.min.js"></script>
+<script src="../../libs/vue.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="../../js/common.js"></script>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<a v-if="hasPermission('invite:inviterewardrule:update')" class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+											<div class="form-group">
+			   	<div class="col-sm-2 control-label">立即奖励</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.firstReward" placeholder="立即奖励"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">第1天</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.day1" placeholder="第一天"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">第2天</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.day2" placeholder="第一天"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">第3天</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.day3" placeholder="第一天"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">第4天</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.day4" placeholder="第一天"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">第5天</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.day5" placeholder="第一天"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">第6天</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.day6" placeholder=""/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">第7天</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.day7" placeholder=""/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">发放条件</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.threshold" placeholder="发放条件"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">规则生效</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.effectiveTime" placeholder="规则生效"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">规则过期</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="inviteRewardRule.expiryTime" placeholder="规则过期"/>
+			    </div>
+			</div>
+							<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="../../js/modules/invite/inviterewardrule.js"></script>
+</body>
+</html>

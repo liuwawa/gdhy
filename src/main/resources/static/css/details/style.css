@@ -1,0 +1,102 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:300);
+.tab {
+  padding-top: 00px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  width: 100%;
+  margin: 0 0px;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.5;
+  font-weight: 300;
+  color: #888;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tabs {
+  display: table;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  width: 100%;
+}
+.tabs li {
+  float: left;
+  line-height: 38px;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+}
+.tabs a {
+  background-color: #eff0f2;
+  border-bottom: 1px solid #fff;
+  color: #888;
+  font-weight: 500;
+  display: block;
+  letter-spacing: 0;
+  outline: none;
+  padding: 0 20px;
+  text-decoration: none;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 2px solid #3c8dbc;
+}
+
+.tabs_item {
+  display: none;
+  padding: 10px 0;
+}
+.tabs_item h4 {
+  font-weight: bold;
+  color: #3c8dbc;
+  font-size: 20px;
+}
+.tabs_item .img {
+  width: 150px;
+  height: 250px;
+  float: left;
+  margin-right: 30px;
+  border-right: 1px solid;
+  border-right-color: #c2ccd0;
+  /*margin-right: 30px;*/
+}
+.tabs_item .img img{
+  width: 64px;
+  height: 64px;
+  margin-left: 18%;
+}
+.tabs_item:first-child {
+  display: block;
+}
+
+.fa{
+  color: #3c8dbc;
+  padding-right: 2px;
+}
+
+.text-primary{/*男*/
+  color:#177cb0 ;
+}
+
+.text-danger{/*女*/
+  color:#db5a6b ;
+}
+
+.current a {
+  color: #fff;
+  background: #3c8dbc;
+}
+
+.col-md-3{
+  display: inline-block;
+  padding-top: 10px;
+}
+
+hr.split-line {
+  border: 0;
+  height: 1px;
+  background: #333;
+  background-image: linear-gradient(to right, #c2ccd0, #efefef, #fff);
+}

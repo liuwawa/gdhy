@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>任务列表
+</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../../css/main.css">
+<script src="../../libs/jquery.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../libs/bootstrap.min.js"></script>
+<script src="../../libs/vue.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+	<style>
+		div.ui-th-div,#jqGrid td{
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<div class="form-group col-md-2">
+				<input type="text" @keyup.enter="query" class="form-control" v-model="q.name" placeholder="任务类型名称">
+			</div>
+			<a class="btn btn-default" @click="query"><i class="fa fa-search"></i>&nbsp;查询</a>
+			<a v-if="hasPermission('admin:tasklist:save')" class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			<a v-if="hasPermission('admin:tasklist:update')" class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			<a v-if="hasPermission('admin:tasklist:delete')" class="btn btn-danger" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">名称</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.name" placeholder="任务名称"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">类型</div>
+			   	<div class="col-sm-10">
+					<select class="form-control" id="type" name="type" v-model="taskList.type">
+						<option value="daily">每日任务</option>
+						<option value="novice">新手任务</option>
+						<option value="base">基本任务</option>
+					</select>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">最小奖励</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.goldMini" placeholder="最小奖励"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">最大奖励</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.goldMax" placeholder="最大奖励"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">图标</div>
+			   	<div class="col-sm-10">
+					<select class="form-control" id="icon" name="icon" v-model="taskList.icon">
+						<option value="gold">金币</option>
+						<option value="red_envelopes">红包</option>
+					</select>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">收益描述</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.profit" placeholder="收益描述"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">链接</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.btnUrl" placeholder="链接"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">任务描述</div>
+			   	<div class="col-sm-10">
+					<textarea class="form-control" rows="3" v-model="taskList.describe" placeholder="任务描述"></textarea>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">按钮文字</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.btnText" placeholder="按钮文字"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">事件</div>
+			   	<div class="col-sm-10">
+					<select class="form-control" v-model="taskList.event">
+						<option value="innerJump">APP内跳转链接</option>
+						<option value="outnerJump">APP外跳转链接</option>
+						<option value="bindWeChat">绑定微信</option>
+						<option value="bindAlipay">绑定支付宝</option>
+						<option value="bindPhone">绑定手机</option>
+						<option value="fullInfo">完善资料</option>
+						<option value="readNews">阅读资讯</option>
+						<option value="watchVideo">看视频</option>
+						<option value="withdrawals">提现</option>
+						<option value="invitation">邀请</option>
+					</select>
+			      <!--<input type="text" class="form-control" v-model="taskList.event" placeholder="事件"/>-->
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">开放时间</div>
+			   	<div class="col-sm-10">
+				  <input id="openTime" type="text" class="form-control" v-model="taskList.openTime" placeholder="开放时间">
+			    </div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-2 control-label">关闭时间</div>
+				<div class="col-sm-10">
+				  <input type="text" id="endTime" class="form-control" v-model="taskList.endTime" placeholder="关闭时间"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">最小用时</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.duration" placeholder="最小用时(秒)"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">版本</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.rersion" placeholder="版本"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">排序</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="taskList.sort" placeholder="排序"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+</div>
+<script src="../../js/common.js"></script>
+<script src="../../plugins/layer/laydate/laydate.js"></script>
+<script src="../../js/modules/admin/tasklist.js"></script>
+</body>
+</html>

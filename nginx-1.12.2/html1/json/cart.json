@@ -1,0 +1,18 @@
+{
+	"allShops":{
+		"totalMoney":0,
+		"shopList":[
+			{
+			"shopId":"1001",
+			"shopName":"智能电脑示范点东方闪电",
+			"shopPrice":299.00
+			},
+			{
+			"shopId":"1002",
+			"shopName":"智能手机使对方的说法是打发士大夫水电费双方的说法",
+			"shopPrice":399.00
+			}
+		]
+	}
+
+}

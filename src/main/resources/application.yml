@@ -1,0 +1,123 @@
+# Tomcat
+server:
+    tomcat:
+        uri-encoding: UTF-8
+        max-threads: 1000
+        min-spare-threads: 30
+    port: 8080
+    connection-timeout: 5000
+    context-path: /
+
+#日志配置文件
+logging:
+  config: classpath:logback-spring.xml
+
+spring:
+    # 环境 dev|test|pro
+    profiles:
+        active: dev
+    application:
+      name: dzkandian
+    # jackson时间格式化
+    jackson:
+        time-zone: GMT+8
+        date-format: yyyy-MM-dd HH:mm:ss
+    http:
+        multipart:
+            max-file-size: 100MB
+            max-request-size: 100MB
+            enabled: true
+    resources: # 指定静态资源的路径
+        static-locations: classpath:/static/,classpath:/views/
+
+# Mybatis配置
+mybatis:
+    mapperLocations: classpath:mapper/**/*.xml
+    configuration:
+      map-underscore-to-camel-case: true
+
+#阿里云短信通信超时依赖配置
+sun:
+  net:
+  client:
+    defaultConnectTimeout: 10000
+    defaultReadTimeout: 10000
+
+#自定义的一些配置
+private:
+  instanceId:
+  #数据时效性，签名过期时间（秒）建议300
+  signTimeout: 600
+  #领取金币id有效期(秒) 建议15
+  termOfValidity: 300
+  #签名加密密匙
+  app_secret: 3d0bffb0-6f-4fd09950fc76-ac5c9ac8-16
+  #数据签名密钥
+  db:
+    secret: 3d0bfffd09b0-6f-4950fc76-ac5c9ac8-16
+  alipay:
+    appId: 2017121200628903
+    pid: 2088821952575743 #签约的支付宝账号对应的支付宝唯一用户号，以2088开头的16位纯数字组成
+    url: https://openapi.alipay.com/gateway.do
+    appPrivateKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCFomMmZT4/KxglLajhKSpjyTEdqlxJCarrVP2u13HK6e71ABXga9t4CtO6LXl6vLIY4CfBS9B4TsdWg1wYuN7o9ph8SBgaJQI0o9j1dEKporqwr/FzB1WEH8/0H/S5E1jmGjjwaDwKd96toQy42tFBSuSH9gn1IKFJ1lGsJvMUTdW8NCOANd6LdM3veZnd++yMenEVT676WXid8RwaxB1etYKxl3P+K+huLjtFIi9/bFj7gjBvXf9UmrmVl1TWtU/+DktmMRLRK9HCiXN6ilDPVy9mBer0FYbhpypEIp896U9OE6dgjhlafoFyvjQGZRFVE3rQyxOEuRh7UstIBkFLAgMBAAECggEAQ3qVQH0dKn6TSaq9vTyxOAQO9iDhSsxD72NSWihWQJVR4YsygMlV4E7vTPLLhcukzuTZjkS/NxDonWnlZmJrxQ1IQHGTIhiP/Y7C7mbPhqMyTCf77w7EAtyhgG9mftIjMMYK/HJV5x9SZTCOoQV1ZtfvgCwgKRRZ/VPol9pvIk/Ui66/aW7Vs4sdAVVrCKslDdAvgWr9Do60ZWuHg5rtPxZ0TDZETntERR6W5I5NYgaXQ57YHKY9O7N1VZhudQw3J+IDgAYeCmVF43K+38D/NhxZg0KV/EgcfLNZymI7e4z8Ucg+B0z8Uj7YUKFlmnIAij96Z4+JviCcQhsuFdQe2QKBgQC8P0Nf3796hzP8sWtVSjsr7EtkdoG4vEzILpretkJwNIja3Oy8UGZOah42or4sOOm4i8QuOUaKvqZZAuB9DWUT9UmvnBiEUpP1BpuV8WM7wN06sTE2PVQuy0YpRY5Ew38QcSZOXm8ezHF5TMu6pA/9L6AirmDFr31dZ6+JM98+ZQKBgQC1uzQWf68fsvWZIaGXxlX2U+o4vZLZYjtML6An2PEoZzw3jG0DUDv0AsmJkJTXazV/sHdz5HYEuBxFNhSD137hMTmMG9XH6ccWQm0Z1Q6dQHPwu7MRoRohHlMnLieDGbTbrTtTZUkqMp7YyzthzIg4UxdsOVQ9QAHrGEiV60Jt7wKBgExVXu2unkeCMbuC+iIgsrPR4pR/VYTinkQCWfx7bZ9wPhp5wWlvNL0RXOUMww7NmUCjNE8GHKvAOVYYy40J9HXOXi3enzZxAdw27Lo1oualA1B8b5ct8Uf0V6P+t3z8xTaWm1DmDCsx/cWRNX+ebXleaZIGoekniy9oDw8UwK7dAoGBALEJYcDZOl0DFcbLwIP+rxd8wBvucfRbgbDCZJ7s9GGL0Fm87yXfL8iSPotI0fbZdhCidHvuABqw0LmL6YhWkkAGmC0poKVT1KKWq3oS2F3QwCGweM2fx7ijthXhHJTWoh2vMLAZZ6E4Fw7TTVIE0l8scxD2+F2C0VuZGH0T5m75AoGBAJTkNmV5xtOYwPUiFiCAPrbgzB8PiiZY3J0awXP3SavcfvChe7GPpNeaY+pT3l9zOo41XELS++EJybWVpzODNCdJVz6yu65Lga8pKzp5zTYBseDzKAsQ+4JIbCBbjvI7hWerXmUzM7bNZO7A3eM8mvzhiVGWSk98061kUtNgmA5U
+    format: json
+    charset: UTF-8
+    #alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu6FY9YFspcSDoYW+244pFtUYI3hj4iyb9dYLK1fVqH+ZrmmGwBmnoyD+BKSdwJBKjR9Gm6ep55p6QL6qhErg2e9f5HQqcWy3axz5osYVA6KypWpbn8ONwmxWjjMcfW1LBryBENLJS3a5nkHRyUeY32BGktReqBLRVU6WpqtOtw7YMaRuxFEamqxnriBfFNdM+num116PnmkPNqftGHmf+Tx3XsjPdpCBJWy2XgnvOKvq0dJnWup4lTMcUZqWBqQzBICpj9CHoPuMMA4RZ/S9QDae1OgRzZ/XAZr49HmNXXjl1bvzvvE7Et14cplJapZ1NPtCQg6CXTWLTBM7ht58wQIDAQAB
+    signType: RSA2
+  wx:
+    appid: wx56bca4b9873b6694
+    app_secret: 32fea59714c67636362d1a9eb0a1ba4d
+    pay:
+      cert_path: C:/Projects/天天看点文件/cert/apiclient_cert.p12
+      sign_key: 8JKLIUEOIWH9738HGFfHKJ9726977fb1
+      mch_appid: 1496045062     #微信支付分配的商户号
+      local_ip: 113.65.24.217   #服务端ip
+
+  # APP模块，是通过jwt认证的，如果要使用APP模块，则需要修改【加密秘钥】
+  jwt:
+      # 加密秘钥
+      secret: a8735adf65d04b48baeb9f6194251be4
+      # token有效时长，7天，单位秒
+      expire: 604800
+      header: token
+  sms:
+    product: Dysmsapi
+    domain: dysmsapi.aliyuncs.com
+    accessKeyId: LTAICxySjbHc7lNV
+    accessKeySecret: RBygmjtYAes4EmWxsdV80XDQkfdUzE
+    maxErrCount: 5
+    tpl:
+      #用户注册短信模板
+      userReg: SMS_115775045
+      #修改或找回密码
+      modifyOrFindPass: SMS_115775044
+      #短信验证码登录
+      smsLogin: SMS_115775047
+      #修改手机号
+      modifyPhone: SMS_115775043
+      #身份验证/提现
+      withdrawals: SMS_115775049
+      #邀请注册成功
+      inviteRegOk: SMS_129760460
+
+    #短信签名
+    sign: 大众看点
+    endpointName: cn-hangzhou
+    regionId: cn-hangzhou
+    #验证码有效期(10分钟)
+    smsTimeout: 600
+  ip-check:
+    url: http://saip.market.alicloudapi.com/ip
+    appcode: e68424a3e13140ffa22639136673a235
+    province: 广东省
+    city: 广州市
+    district: 花都区
+  iacs:
+    accessKeyId: LTAI857hoUhfoxNp
+    accessKeySecret: uD8YYgYETkBi4Igr0qt9rdoulME3GD
+    regionId: cn-hangzhou
+    endpointName: cn-hangzhou
+    domain: afs.aliyuncs.com
+    appKey: FFFF00000000017B0D3C
+  img-gen-salt: YAN=PC1523959170576
+  chatbot-webhook: https://oapi.dingtalk.com/robot/send?access_token=232159a13a57b4c73987ab8bd2291915a22896c117b5a6ff89730fe0c47b8393

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.CommentListDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.CommentListEntity">
+		select * from tb_comment_list where id = #{value} and `del_flag` = 0
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.CommentListEntity">
+		select * from tb_comment_list where `del_flag` = 0
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `id` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_comment_list where `del_flag` = 0
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.admin.entity.CommentListEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_comment_list
+		(
+			`user_id`, 
+			`opinion`, 
+			`img_url`, 
+			`phone`, 
+			`app_edition`, 
+			`sys_edition`, 
+			`sys_name`, 
+			`phone_mark`, 
+			`phone_equipment_id`, 
+			`submit_time`, 
+			`is_solve`, 
+			`remarks`, 
+			`del_flag`
+		)
+		values
+		(
+			#{userId}, 
+			#{opinion}, 
+			#{imgUrl}, 
+			#{phone}, 
+			#{appEdition}, 
+			#{sysEdition}, 
+			#{sysName}, 
+			#{phoneMark}, 
+			#{phoneEquipmentId}, 
+			#{submitTime}, 
+			#{isSolve}, 
+			#{remarks}, 
+			#{delFlag}
+		)
+	</insert>
+
+	<update id="update">
+		update tb_comment_list 
+			<set>
+				<if test="remarks != null">`remarks` = #{remarks}, </if>
+				<if test="modify_time != null">`modify_time` = #{modify_time}, </if>
+				<if test="modify_user != null">`modify_user` = #{modify_user}, </if>
+				<if test="is_solve != null">`is_solve` = #{is_solve}, </if>
+			</set>
+		where id = #{id}
+	</update>
+	
+	<update id="delete">
+		update tb_comment_list set `del_flag` = 1 where id = #{value}
+	</update>
+	
+	<update id="deleteBatch">
+        update tb_comment_list set `del_flag` = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+</mapper>

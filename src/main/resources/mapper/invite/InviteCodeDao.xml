@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.invite.dao.InviteCodeDao">
+
+	<select id="queryObject" resultType="io.renren.modules.invite.entity.InviteCodeEntity">
+		select * from tb_invite_code where invite_code = #{value}
+	</select>
+
+	<select id="queryByUser" resultType="io.renren.modules.invite.entity.InviteCodeEntity">
+		select * from tb_invite_code where `user_id` = #{value} AND `state` > -2 ORDER BY `state` DESC,create_time DESC LIMIT 1
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.invite.entity.InviteCodeEntity">
+		select * from tb_invite_code
+		<where>
+			<if test="userId != null and userId != ''">
+				and `user_id` = #{userId}
+			</if>
+			<if test="inviteCode != null and inviteCode != ''">
+				and `invite_code` = #{inviteCode}
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `invite_code` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_invite_code
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.invite.entity.InviteCodeEntity" useGeneratedKeys="true" keyProperty="inviteCode">
+		insert into tb_invite_code
+		(
+			`user_id`, 
+			`state`, 
+			`create_time`
+		)
+		values
+		(
+			#{userId}, 
+			#{state}, 
+			#{createTime}
+		)
+	</insert>
+
+	<update id="abandon">
+		update tb_invite_code set `state` = -2 where invite_code = #{value}
+	</update>
+	
+	<update id="abandonBatch">
+        update tb_invite_code set `state` = -2 where invite_code in
+		<foreach item="inviteCode" collection="array" open="(" separator="," close=")">
+			#{inviteCode}
+		</foreach>
+	</update>
+
+	<update id="disable">
+		update tb_invite_code set `state` = -1 where invite_code = #{value}
+	</update>
+
+	<update id="disableBatch">
+        update tb_invite_code set `state` = -1 where invite_code in
+		<foreach item="inviteCode" collection="array" open="(" separator="," close=")">
+			#{inviteCode}
+		</foreach>
+	</update>
+
+	<update id="enable">
+		update tb_invite_code set `state` = 0 where invite_code = #{value}
+	</update>
+
+	<update id="enableBatch">
+        update tb_invite_code set `state` = 0 where invite_code in
+		<foreach item="inviteCode" collection="array" open="(" separator="," close=")">
+			#{inviteCode}
+		</foreach>
+	</update>
+
+</mapper>

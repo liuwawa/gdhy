@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.api.dao.DeviceInfoDao">
+
+	<insert id="save" parameterType="io.renren.modules.api.entity.DeviceInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_device_info
+		(
+			`user_id`,
+			`md5`,
+			`imei`,
+			`device_info`,
+			`create_time`
+		)
+		values
+			(
+			#{userId},
+			#{md5},
+			#{imei},
+			#{deviceInfo},
+			#{createTime}
+			)
+	</insert>
+
+	<select id="queryObject"  resultType="io.renren.modules.api.entity.DeviceInfo">
+		select * from tb_device_info where user_id = #{userId} ORDER BY create_time DESC LIMIT 1
+	</select>
+
+	<select id="queryListByUserId" resultType="io.renren.modules.api.entity.DeviceInfo">
+		select * from tb_device_info where user_id = #{userId} ORDER BY create_time DESC
+	</select>
+
+	<select id="queryListByImei" resultType="long">
+		select distinct `user_id` from `tb_device_info` where `imei` = #{imei} and user_id<![CDATA[ <> ]]>#{userId}
+	</select>
+	
+	<select id="queryCountByUserIdAndMd5" resultType="java.lang.Integer" parameterType="io.renren.modules.api.entity.DeviceInfo">
+		select 1 from tb_device_info where user_id =#{userId} and md5=#{md5} LIMIT 1
+	</select>
+
+</mapper>

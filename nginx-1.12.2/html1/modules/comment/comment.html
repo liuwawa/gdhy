@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"></meta>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1,minimum-scale=1 ,user-scalable=no"></meta>
+    <title>Title</title>
+    <script type="text/javascript" src="../../libs/jquery.min.js"></script>
+    <script type="text/javascript" src="../../libs/vue.min.js"></script>
+    <script type="text/javascript" src="../../libs/vue-resource.js"></script>
+	<script src="../../js/common.js"></script>
+    <link ref="stylesheet" href="../../css/bootstrap.min.css"></link>
+
+    <style type="text/css">
+
+        body{
+            margin:0;
+            padding:0;
+            list-style-type: none;
+        }
+        #app .showComment{
+            display: flex;
+            box-sizing: border-box;
+            flex-direction: column;
+            padding: 5px;
+            margin: 5px;
+        }
+        .showComment li{
+            display: flex;
+            flex-direction:row;
+            border-bottom: 1px #F0F0F0 solid;
+            /*padding: 4px;*/
+            /*margin:3px;*/
+        }
+        /*.showComment li .headimg{*/
+
+        /*display: flex;*/
+
+        /*!*flex-grow:5;  !*设置比例   具体去看看flex  http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html?^%$*!*!*/
+        /*flex-basis: 0%;*/
+        /*flex-shrink:1;*/
+        /*}*/
+
+        .showComment li .content{
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+
+
+        }
+        #app .comment_title{
+
+
+            border-bottom: 1px #F0F0F0 solid;
+        }
+        .pic{
+            border-radius:50%;
+            width: 46px;
+            height: 48px;
+
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+<div id="app">
+    <div class="comment_title" >
+        <p style="font-weight: bold;margin-bottom: 7px;">评论({{totalMoney}})</p>
+    </div>
+
+    <ui class="showComment" v-for="(comment,index) in commentList">
+        <li>
+            <div class="headimg">
+                
+				<img src="http://publish-pic-cpu.baidu.com/82752263-0b00-4e39-9b82-6b83ab947a5c.jpeg@q_90,w_228,h_152" alt="kk" class="pic"/>
+            </div>
+            <div class="content">
+                <span style="font-weight: 600;color: #379be9;font-size: 15px">{{comment.uname}}</span>
+                <span id="f" style="color: #999;display: inline-block;margin-left: 12px;font-size: 10px">{{comment.commentdate}}</span>
+                <p v-text="comment.comment"></p>
+
+
+            </div>
+        </li>
+    </ui>
+</div>
+
+<script src="../../js/modules/comment/comment.js"></script>
+</body>
+</html>

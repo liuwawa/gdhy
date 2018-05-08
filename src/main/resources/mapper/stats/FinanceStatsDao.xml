@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.stats.dao.FinanceStatsDao">
+
+	<select id="queryObject" resultType="io.renren.modules.stats.entity.FinanceStatsEntity">
+		select * from tb_finance_stats where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.stats.entity.FinanceStatsEntity">
+		select * from tb_finance_stats
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `id` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_finance_stats
+	</select>
+
+	<select id="sumRmbByTime" resultType="int">
+		select sum(rmb) FROM tb_withdrawals WHERE `status` = 2 AND `create_time` BETWEEN #{a} AND #{b};
+	</select>
+
+	<select id="sumRmbFromStats" resultType="int">
+		select sum(total) FROM tb_finance_stats WHERE `type` = #{type} AND `than_day` BETWEEN #{a} AND #{b};
+	</select>
+
+	<select id="RangeByHour" resultType="io.renren.modules.stats.entity.FinanceStatsEntity">
+		select * from tb_finance_stats WHERE `type` = #{type} AND than_day BETWEEN #{a} AND #{b} AND than_hour BETWEEN #{hours} AND #{hours1};
+	</select>
+
+	<select id="RangeByCustom" resultType="io.renren.modules.stats.entity.FinanceStatsEntity">
+		select * from tb_finance_stats WHERE `type` = #{type} AND ${field} BETWEEN #{a} AND #{b};
+	</select>
+
+	<insert id="save" parameterType="io.renren.modules.stats.entity.FinanceStatsEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_finance_stats
+		(
+			`type`, 
+			`than_hour`, 
+			`than_day`, 
+			`than_month`, 
+			`than_year`, 
+			`create_time`, 
+			`total`, 
+			`increase`, 
+			`compairson`
+		)
+		values
+		(
+			#{type}, 
+			#{thanHour}, 
+			#{thanDay}, 
+			#{thanMonth}, 
+			#{thanYear}, 
+			#{createTime}, 
+			#{total}, 
+			#{increase}, 
+			#{compairson}
+		)
+	</insert>
+
+</mapper>

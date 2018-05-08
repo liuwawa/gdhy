@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.api.dao.UserOssDao">
+
+	<select id="queryObject" resultType="io.renren.modules.api.entity.UserOssEntity">
+		select * from tb_user_oss where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.api.entity.UserOssEntity">
+		select * from tb_user_oss order by id desc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_user_oss
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.api.entity.UserOssEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_user_oss
+		(
+			`url`,
+			`type`,
+			`create_time`,
+			`create_user`,
+			`del_flag`
+		)
+		values
+		(
+			#{url},
+			#{type},
+			#{createTime},
+			#{createUser},
+			#{delFlag}
+		)
+	</insert>
+
+	<delete id="delete">
+		UPDATE tb_user_oss set delFlag = 1 WHERE id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		UPDATE tb_user_oss set delFlag = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.ActivityCentralDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.ActivityCentralEntity">
+		select * from tb_activity_central where id = #{value} and `del_flag` = 0
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.ActivityCentralEntity">
+		select * from tb_activity_central where `del_flag` = 0
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `id` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_activity_central where `del_flag` = 0
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.admin.entity.ActivityCentralEntity">
+		insert into tb_activity_central
+		(
+			`classification`, 
+			`title`, 
+			`img_url`, 
+			`desc`,
+			`tag`,
+			`btntext`,
+			`start_time`, 
+			`end_time`, 
+			`create_time`, 
+			`create_user`, 
+			`modify_time`, 
+			`modify_user`, 
+			`del_flag`
+		)
+		values
+		(
+			#{classification}, 
+			#{title}, 
+			#{imgUrl}, 
+			#{desc},
+			#{tag},
+			#{btnText},
+			#{startTime}, 
+			#{endTime}, 
+			#{createTime}, 
+			#{createUser}, 
+			#{modifyTime}, 
+			#{modifyUser}, 
+			#{delFlag}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.modules.admin.entity.ActivityCentralEntity">
+		update tb_activity_central 
+		<set>
+			<if test="classification != null">`classification` = #{classification}, </if>
+			<if test="title != null">`title` = #{title}, </if>
+			<if test="imgUrl != null">`img_url` = #{imgUrl}, </if>
+			<if test="desc != null">`desc` = #{desc}, </if>
+			<if test="tag != null">`tag` = #{tag}, </if>
+			<if test="btnText != null">`btntext` = #{btnText}, </if>
+			<if test="startTime != null">`start_time` = #{startTime}, </if>
+			<if test="endTime != null">`end_time` = #{endTime}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="createUser != null">`create_user` = #{createUser}, </if>
+			<if test="modifyTime != null">`modify_time` = #{modifyTime}, </if>
+			<if test="modifyUser != null">`modify_user` = #{modifyUser}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="delete">
+		update tb_activity_central set `del_flag` = 1 where id = #{value}
+	</update>
+	
+	<update id="deleteBatch">
+        update tb_activity_central set `del_flag` = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+</mapper>

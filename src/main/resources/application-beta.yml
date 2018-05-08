@@ -1,0 +1,82 @@
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        druid:
+            first:  #数据源1
+                url: jdbc:mysql://mysql:3306/dzkandian?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&zeroDateTimeBehavior=convertToNull
+                username: dzkandian
+                password: V5F1ea97!f85T#4408_Ac2b@8729ef3f
+            second:  #数据源2
+                url: jdbc:mysql://mysql:3306/dzkandian?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&zeroDateTimeBehavior=convertToNull
+                username: dzkandian
+                password: V5F1ea97!f85T#4408_Ac2b@8729ef3f
+            third:  #数据源3
+                url: jdbc:mysql://mysql:3306/dzkandian?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&zeroDateTimeBehavior=convertToNull
+                username: dzkandian
+                password: V5F1ea97!f85T#4408_Ac2b@8729ef3f
+            initial-size: 10
+            max-active: 200
+            min-idle: 10
+            max-wait: 15000
+            use-unfair-lock: true
+            pool-prepared-statements: true
+            max-open-prepared-statements: 100
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT 1 FROM DUAL
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                login-username: admin
+                login-password: tdnet
+            filter:
+                stat:
+                    log-slow-sql: false
+                    slow-sql-millis: 1000
+                    merge-sql: true
+                wall:
+                    config:
+                        multi-statement-allow: true
+    redis:
+        token:
+            database: 1
+            host: redis
+            port: 6379
+            password:
+            timeout: 6000  # 连接超时时长（毫秒）
+            pool:
+                max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+                max-wait: 1000      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+                max-idle: 10      # 连接池中的最大空闲连接
+                min-idle: 5       # 连接池中的最小空闲连接
+        cache:
+            database: 2
+            host: redis
+            port: 6379
+            password:
+            timeout: 6000  # 连接超时时长（毫秒）
+            expiration: 30 # 默认过期时间（秒）
+            pool:
+                max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+                max-wait: 1000      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+                max-idle: 10      # 连接池中的最大空闲连接
+                min-idle: 5       # 连接池中的最小空闲连接
+#自定义的一些配置
+private:
+  #签名加密密匙
+  app_secret: 6849ca01-4ee-e8752-93ac00008-cd33427
+  wx:
+    pay:
+      cert_path: /data/wxcert/apiclient_cert.p12
+      local_ip: 39.108.50.93   #服务端ip
+  ip-check:
+    url: http://saip.market.alicloudapi.com/ip
+    appcode: e68424a3e13140ffa22639136673a235
+    province: 广东省
+    city: 广州市
+    district: 花都区

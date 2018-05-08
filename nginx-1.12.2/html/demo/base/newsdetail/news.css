@@ -1,0 +1,177 @@
+* {
+				margin: 0;
+				padding: 0;
+				-webkit-touch-callout:none;
+				-webkit-user-select:none;
+				-webkit-tap-highlight-color:transparent;
+			}
+			body{background-color: white}
+			ul{list-style-type: none}
+			a {text-decoration: none;color: #18B4FE;}
+			
+			/*vue*/
+			[v-cloak] {
+			  display: none;
+			}
+
+			
+			/*mescroll滚动的区域*/
+			.mescroll{
+				position: fixed;
+				top: 10px;
+				bottom: 0px;
+				height: auto;
+			}
+			/*展示上拉加载的数据列表*/
+			.data-list{
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				flex-basis: 0%;
+				padding-top: 10px;
+
+			}
+			
+			.data-list li.li1 {
+				display: flex;
+				flex-direction: column;
+				align-items: stretch;
+				
+				border-bottom: 0.3px solid #DDDDDD;
+				padding-left: 1px;
+				/*margin-left: 5px;*/
+				box-sizing: border-box;
+				flex-shrink: 1;
+				align-content: center;
+			}
+			.data-list li.li1 div{
+				
+				flex-basis: 0%;
+				
+			}
+			.data-list li.li1  div.img1{
+
+				display: flex;
+				flex-direction: row;
+				flex-basis: 0%;
+				box-sizing: border-box;
+				
+				
+			}
+			.data-list li.li1 div img.pic{
+				display: flex;
+				flex-grow: 2;
+				flex-basis: 0%
+				padding-right: 2px;
+				margin-left: 3px;
+			}
+			.data-list img{
+				width: 80px;
+				height: 80px;
+			}
+			.data-list div.titleClass span:first-child{
+				font-size: 1.2rem;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				align-items:flex-start;
+
+				font-family:'Microsoft YaHei';
+				
+			}
+			.data-list div.beizhu span:last-child{
+				font-size: 0.7rem;
+				font-weight: 200;
+				align-items:flex-end;
+				margin-top: 10px;
+				padding-left: 2px;
+				display: flex;
+				box-sizing: border-box;
+				flex-direction: row;
+				
+			}
+			.data-list div.beizhu span:last-child p:first-child{
+				display: flex;
+				flex-grow: 5;
+				
+			}
+			.data-list div.beizhu span:last-child p:last-child{
+				/*display: flex;
+				flex-grow: 10;*/
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			.data-list li.li2 a{
+				display: flex;
+				flex-direction: row;
+				align-items:stretch;
+				padding-left: 1px;
+				margin: 7px 0px 7px 0px;
+				padding-bottom: 16px;
+				border-bottom: 0.3px solid #DDDDDD;
+				box-sizing: border-box;
+				align-content: center;
+			}
+			.data-list li.li2 div{
+				flex-basis: 0%;
+			}
+			.data-list li.li2 a div.left{
+				display: flex;
+				flex-grow: 2.2;
+			}
+			.data-list li.li2 a div.left img{
+				width: 100%;
+				height: 100%;
+			}
+			.data-list li.li2 div.right{
+				display: flex;
+				flex-grow: 4;
+				padding: 0 0px 0 5px;
+				box-sizing: border-box;
+				flex-direction: column;
+			}
+			.data-list div.right span:first-child{
+				font-size: 18px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				
+				
+				
+			}
+			.data-list div.right span:last-child{
+				display: flex;
+				flex-grow: 6;		
+				box-sizing: border-box;
+				flex-direction: row;
+				font-size: 0.7rem;
+				font-weight: 200;
+				align-items:flex-end;
+				font-color: #99999;
+			}
+			.data-list div.right span:last-child p:first-child{
+				display: flex;
+				flex-grow: 5;
+				
+			}
+			.data-list div.right span:last-child p:last-child{
+				/*display: flex;
+				flex-grow: 10;*/
+				
+			}
+			
+			
+		
+			a:link,a:visited{color:#444;text-decoration:none;}

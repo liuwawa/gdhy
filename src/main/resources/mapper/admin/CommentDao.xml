@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.CommentDao">
+
+
+	 
+	<insert id="saveComment" parameterType="io.renren.modules.admin.entity.CommentEntity" useGeneratedKeys="true" keyProperty="cid">
+		insert into tb_usercomment
+		(
+			`uid`, 
+			`aid`, 
+			`uname`, 
+			`headimg`, 
+			`comment`, 
+			`commentdate`
+		)
+		values
+		(
+			#{uid}, 
+			#{aid}, 
+			#{uName},
+			#{headImg},
+			#{comment}, 
+			#{commentDate}
+		)
+	</insert>
+
+	<select id="queryCommend" parameterType="io.renren.modules.admin.entity.vo.CommAndFabulousVo" resultType="io.renren.modules.admin.entity.vo.CommAndFabulousVo">
+		select
+		uc.cid ,
+		uc.commFabTotal ,
+		uc.uid,
+		uc.uname,
+		u.avatar as headImg,
+		uc.comment,
+		uc.commentdate,
+		uc.aid,
+		uf.flag
+		from (tb_usercomment uc INNER JOIN tb_user u on uc.uid = u.user_id and
+		uc.aid = #{aid})
+		left join
+		tb_usercomment_fabulous uf
+		on
+		uc.cid = uf.cid  and
+		uc.delflag = 0  and
+		uf.uid = #{uid}
+		ORDER BY  uc.commFabTotal desc LIMIT #{begin},#{size}
+	</select>
+
+
+	<select id="queryCommentTotalByAid" parameterType="string" resultType="int">
+		select count(*) from tb_usercomment where aid = #{aid}
+	</select>
+
+	<select id="queryFabulousTotalByAid" parameterType="string" resultType="int">
+		select count(*) from tb_fabulous where aid = #{aid}
+	</select>
+
+
+	<select id="queryFabulous" parameterType="io.renren.modules.admin.entity.Fabulous" resultType="io.renren.modules.admin.entity.Fabulous">
+		SELECT * from fabulous where uid=#{uid} and aid = #{aid}
+	</select>
+
+	<insert id="saveFab" parameterType="io.renren.modules.admin.entity.Fabulous" useGeneratedKeys="true" keyProperty="fid">
+		insert into tb_fabulous
+		(
+			`uid`,
+			`aid`
+		)
+		values
+		(
+			#{uid},
+			#{aid}
+		)
+	</insert>
+
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.CommentEntity">
+		select * from tb_usercomment where `cid` = #{value}
+	</select>
+
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.CommentEntity">
+		select * from tb_usercomment
+		<where>
+			and delFlag = 0
+			<if test="aid != null and aid.trim() != ''">
+				and `aid` like concat('%',#{aid},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="sidx != null and sidx.trim() != ''">
+				order by ${sidx} ${order}
+			</when>
+			<otherwise>
+				order by `cid` desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+
+	<select id="queryTotal" resultType="int">
+		select count(*) from tb_usercomment
+	</select>
+
+
+	<insert id="save" parameterType="io.renren.modules.admin.entity.CommentEntity" useGeneratedKeys="true" keyProperty="cid">
+		insert into tb_usercomment
+		(
+		`uid`,
+		`aid`,
+		`uname`,
+		`headimg`,
+		`comment`,
+		`commentdate`
+		)
+		values
+		(
+		#{uid},
+		#{aid},
+		#{uname},
+		#{headimg},
+		#{comment},
+		#{commentdate}
+		)
+	</insert>
+
+
+	<update id="update" parameterType="io.renren.modules.admin.entity.CommentEntity">
+		update tb_usercomment
+		<set>
+			<if test="uid != null">`uid` = #{uid}, </if>
+			<if test="aid != null">`aid` = #{aid}, </if>
+			<if test="uname != null">`uname` = #{uname}, </if>
+			<if test="headimg != null">`headimg` = #{headimg}, </if>
+			<if test="comment != null">`comment` = #{comment}, </if>
+			<if test="commentdate != null">`commentdate` = #{commentdate},</if>
+		</set>
+		where cid = #{cid}
+	</update>
+
+	<delete id="delete">
+		delete from tb_usercomment where cid = #{value}
+	</delete>
+
+	<update id="deleteBatch">
+		UPDATE tb_usercomment
+		set `delflag` = 1
+		where `cid` in
+		<foreach item="cid" collection="array" open="(" separator="," close=")">
+			#{cid}
+		</foreach>
+	</update>
+
+	<update id="releaseBatch">
+		UPDATE tb_usercomment
+		set `delflag` = 0
+		where `cid` in
+		<foreach item="cid" collection="array" open="(" separator="," close=")">
+			#{cid}
+		</foreach>
+	</update>
+
+	<!--检查是否已经对该评论点赞了-->
+	<select id="findCommFabByUserIdCid" parameterType="io.renren.modules.admin.entity.CommentFabulos" resultType="io.renren.modules.admin.entity.CommentFabulos">
+		select * from tb_usercomment_fabulous where cid = #{cid} and uid = #{uid}
+	</select>
+
+	<!--保存用户对该评论的点赞-->
+	<insert id="saveCommFab" parameterType="io.renren.modules.admin.entity.CommentFabulos" useGeneratedKeys="true" keyProperty="cfid">
+		insert into tb_usercomment_fabulous
+		(
+		`uid`,
+		`aid`,
+		`cid`,
+		`flag`
+		)
+		values
+		(
+		#{uid},
+		#{aid},
+		#{cid},
+		#{flag}
+		)
+	</insert>
+
+	<!--对用户评论的点赞加1-->
+	<update id="addOneCommFab" parameterType="long">
+		UPDATE tb_usercomment set `commFabTotal` = `commFabTotal` + 1 where `cid` = #{cid}
+	</update>
+
+	<!--获取该资讯下的点赞总数，如果用户登陆了就返回判断的标识-->
+	<select id="findInfoFabuTotal" parameterType="io.renren.modules.admin.entity.Fabulous" resultType="io.renren.modules.admin.entity.Fabulous">
+		select count(*) as infoFabTotal from tb_fabulous where `uid` = #{uid} group by `aid`
+	</select>
+
+</mapper>

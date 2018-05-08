@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.WithdrawalsDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.WithdrawalsEntity">
+		select * from tb_withdrawals where id = #{value}
+	</select>
+
+	<select id="sumByUser" resultType="int">
+		select SUM(rmb) from tb_withdrawals where `user_id` = #{userId} AND `status` = 2
+		<if test="time!=null">
+			AND to_days(`create_time`)=to_days(#{time})
+		</if>
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.WithdrawalsEntity">
+		select * from tb_withdrawals
+		<where>
+			<if test="id != null and id.trim() != ''">
+				and `id` = #{id}
+			</if>
+			<if test="name != null and name.trim() != ''">
+				and `name` like concat('%',#{name},'%')
+			</if>
+			<if test="phone != null and phone.trim() != ''">
+				and `phone` = #{phone}
+			</if>
+			<if test="payNo != null and payNo.trim() != ''">
+				and `pay_no` = #{payNo}
+			</if>
+			<if test="userAccount != null and userAccount.trim() != ''">
+				and `user_account` =#{userAccount}
+			</if>
+			<if test="status != null and status != ''">
+				and `status` = #{status}
+			</if>
+			<if test="channel != null">
+				and `channel` = #{channel}
+			</if>
+			<if test="user_id != null">
+				and `user_id` = #{user_id}
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `id` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_withdrawals
+		<where>
+			<if test="id != null and id.trim() != ''">
+				and `id` = #{id}
+			</if>
+			<if test="user_id != null and user_id.trim() != ''">
+				and `user_id` = #{user_id}
+			</if>
+			<if test="name != null and name.trim() != ''">
+				and `name` like concat('%',#{name},'%')
+			</if>
+			<if test="phone != null and phone.trim() != ''">
+				and `phone` = #{phone}
+			</if>
+			<if test="payNo != null and payNo.trim() != ''">
+				and `pay_no` = #{payNo}
+			</if>
+			<if test="userAccount != null and userAccount.trim() != ''">
+				and `user_account` =#{userAccount}
+			</if>
+			<if test="status != null and status != ''">
+				and `status` = #{status}
+			</if>
+			<if test="channel != null">
+				and `channel` = #{channel}
+			</if>
+		</where>
+	</select>
+
+	<select id="pageByUser" resultType="io.renren.modules.admin.entity.WithdrawalsEntity">
+		select * from tb_withdrawals where `user_id` = #{userId}
+		<if test="status != null">
+			AND `status` = #{status}
+		</if>
+		order BY `create_time` desc limit #{a},#{b}
+	</select>
+
+	<select id="make" statementType="CALLABLE">
+		call create_withdrawals_and_deduction(
+			#{id,jdbcType=VARCHAR,mode=IN},
+			#{userId,jdbcType=INTEGER,mode=IN},
+			#{rmb,jdbcType=INTEGER,mode=IN},
+			#{channel,jdbcType=VARCHAR,mode=IN},
+			#{phone,jdbcType=VARCHAR,mode=IN},
+			#{name,jdbcType=VARCHAR,mode=IN},
+			#{userAccount,jdbcType=VARCHAR,mode=IN},
+			#{createTime,jdbcType=TIMESTAMP,mode=IN},
+			#{result,jdbcType=INTEGER,mode=OUT}
+		);
+	</select>
+
+	<update id="finish">
+		UPDATE `tb_withdrawals` SET `status` = 2, `pay_no`=#{payNo}, `finish_time`=#{finishTime}, `total_rmb` = `total_rmb` + `rmb` WHERE `id` = #{id} AND `status` = 1
+	</update>
+
+	<select id="close" statementType="CALLABLE">
+		call close_withdrawals_and_retreatgold(
+		#{createTime,jdbcType=TIMESTAMP,mode=IN},
+		#{oid,jdbcType=VARCHAR,mode=IN},
+		#{closeMsg,jdbcType=VARCHAR,mode=IN},
+		#{result,jdbcType=INTEGER,mode=OUT})
+	</select>
+
+	<select id="queryCountByUserIdAndStatus" resultType="java.lang.Integer">
+		select 1 from tb_withdrawals where `user_id` = #{userId}
+		<if test="status != null">
+			AND `status` = #{status}
+		</if>
+		limit 1
+	</select>
+
+</mapper>

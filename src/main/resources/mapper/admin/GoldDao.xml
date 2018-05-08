@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.GoldDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.GoldEntity">
+		select * from tb_gold where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.GoldEntity">
+		select * from tb_gold
+		<where>
+			<if test="id != null and id.trim() != ''">
+				and `id` = #{id}
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `id` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_gold
+		<where>
+			<if test="id != null and id.trim() != ''">
+				and `id` = #{userId}
+			</if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="io.renren.modules.admin.entity.GoldEntity">
+		insert into tb_gold
+		(
+			`id`, 
+			`today`, 
+			`surplus`, 
+			`total`, 
+			`last_exchange`, 
+			`last_task`, 
+			`modify_time`,
+			`today_read`,
+			`today_video`,
+			`yesterday_read`,
+			`yesterday_video`
+		)
+		values
+		(
+			#{id}, 
+			#{today}, 
+			#{surplus}, 
+			#{total}, 
+			#{lastExchange}, 
+			#{lastTask}, 
+			#{modifyTime},
+			#{todayRead},
+			#{todayVideo},
+			#{yesterdayRead},
+			#{yesterdayVideo}
+		)
+	</insert>
+
+	<update id="resetToday">
+		UPDATE `tb_gold` SET `today`='0',`yesterday_read`=`today_read`,`yesterday_video`=`today_video`,`today_read`='0',`today_video`='0' WHERE true
+	</update>
+
+	<select id="modifySurplusGold" statementType="CALLABLE">
+		call modify_surplus_gold(
+		#{id,jdbcType=TIMESTAMP,mode=IN},
+		#{userId,jdbcType=BIGINT,mode=IN},
+		#{type,jdbcType=INTEGER,mode=IN},
+		#{reward,jdbcType=INTEGER,mode=IN},
+		#{describe,jdbcType=VARCHAR,mode=IN},
+		#{result,jdbcType=INTEGER,mode=OUT})
+	</select>
+	
+	<update id="updateTodayReadByUserId">
+		UPDATE `tb_gold` set `today_read` = `today_read`+#{reward} where `id`=#{userId}
+	</update>
+	<update id="updateTodayVedioByUserId">
+		UPDATE `tb_gold` set `today_video` = `today_video`+#{reward} where `id`=#{userId}
+	</update>
+</mapper>

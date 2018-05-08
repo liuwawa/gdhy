@@ -1,0 +1,18 @@
+{
+	"allShops":{
+		"totalMoney":0,
+		"shopList":[
+			{
+			"shopId":"1001",
+			"shopName":"智能电脑",
+			"shopPrice":"299.00"
+			},
+			{
+			"shopId":"1002",
+			"shopName":"智能手机",
+			"shopPrice":"399.00"
+			}
+		]
+	}
+
+}

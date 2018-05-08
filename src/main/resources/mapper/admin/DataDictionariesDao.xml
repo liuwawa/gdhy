@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.DataDictionariesDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.DataDictionariesEntity">
+		select * from tb_data_dictionaries where id = #{value} and `del_flag` = 0
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.DataDictionariesEntity">
+		select * from tb_data_dictionaries where `del_flag` = 0
+		<if test="key != null and key.trim() != ''">
+			AND  `key` = #{key}
+		</if>
+		<if test="version != null and version.trim() != ''">
+			AND  `version` = #{version}
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `id` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_data_dictionaries where `del_flag` = 0
+		<if test="key != null and key.trim() != ''">
+			AND  `key` = #{key}
+		</if>
+		<if test="version != null and version.trim() != ''">
+			AND  `version` = #{version}
+		</if>
+	</select>
+	
+	<select id="queryByKey" statementType="CALLABLE" resultType="java.lang.String">
+		call get_best_dict_value_by_key(#{key},#{version});
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.admin.entity.DataDictionariesEntity">
+		insert into tb_data_dictionaries
+		(
+			`key`, 
+			`type`, 
+			`value`,
+			`version`,
+			`create_time`, 
+			`create_user`, 
+			`modify_time`, 
+			`modify_user`, 
+			`del_flag`
+		)
+		values
+		(
+			#{key}, 
+			#{type}, 
+			#{value},
+			#{version},
+			#{createTime}, 
+			#{createUser}, 
+			#{modifyTime}, 
+			#{modifyUser}, 
+			0
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.modules.admin.entity.DataDictionariesEntity">
+		update tb_data_dictionaries 
+		<set>
+			<if test="key != null">`key` = #{key}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="value != null">`value` = #{value}, </if>
+			<if test="version != null">`version` = #{version}, </if>
+			<if test="modifyTime != null">`modify_time` = #{modifyTime}, </if>
+			<if test="modifyUser != null">`modify_user` = #{modifyUser}, </if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="delete">
+		update tb_data_dictionaries set `del_flag` = 1 where id = #{value}
+	</update>
+	
+	<update id="deleteBatch">
+        update tb_data_dictionaries set `del_flag` = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+</mapper>

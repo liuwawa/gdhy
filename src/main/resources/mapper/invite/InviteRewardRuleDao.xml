@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.invite.dao.InviteRewardRuleDao">
+
+	<select id="queryObject" resultType="io.renren.modules.invite.entity.InviteRewardRuleEntity">
+		select * from tb_invite_reward_rule where id = #{value}
+	</select>
+
+	<select id="getCurrentRule" resultType="io.renren.modules.invite.entity.InviteRewardRuleEntity">
+		select * from tb_invite_reward_rule ORDER BY id DESC limit 1
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.invite.entity.InviteRewardRuleEntity">
+		select * from tb_invite_reward_rule ORDER BY id DESC limit 1
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select 1
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.invite.entity.InviteRewardRuleEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_invite_reward_rule
+		(
+			`first_reward`, 
+			`day1`, 
+			`day2`, 
+			`day3`, 
+			`day4`, 
+			`day5`, 
+			`day6`, 
+			`day7`, 
+			`threshold`, 
+			`create_time`, 
+			`create_user`,
+			`effective_time`,
+			`expiry_time`
+		)
+		values
+		(
+			#{firstReward}, 
+			#{day1}, 
+			#{day2}, 
+			#{day3}, 
+			#{day4}, 
+			#{day5}, 
+			#{day6}, 
+			#{day7}, 
+			#{threshold}, 
+			#{createTime}, 
+			#{createUser},
+			#{effectiveTime},
+			#{expiryTime}
+		)
+	</insert>
+
+</mapper>

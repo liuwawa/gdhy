@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>用户</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"-->
+          <!--integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="../../css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+    <link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/details/reset.css">
+    <link rel="stylesheet" href="../../css/details/style.css">
+    <script src="../../libs/jquery.min.js"></script>
+    <script src="../../plugins/layer/layer.js"></script>
+    <script src="../../libs/bootstrap.min.js"></script>
+    <script src="../../libs/vue.min.js"></script>
+    <script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+    <script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+    <script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <style>
+        tr{
+            height: 30px;
+        }
+        thead tr {
+            font-weight: bold;
+        }
+        td{
+            font-size: 12px;
+        }
+        .img-circle{
+            width: 30%;
+        }
+
+        div .col-md-5{
+            margin: 5px;
+        }
+
+        .fas ,  .fab  , .far{
+            font-size: 25px;
+        }
+        .red{
+            color: #ff0202;
+        }
+        .user-info{
+            font-size: small;
+            word-break: break-all;
+            overflow-y: auto;
+            height: 715px;
+        }
+        .user-info div{
+            padding-left: 0px;
+            padding-top: 10px;
+        }
+        .table-task .col-md-4{
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .jqgfirstrow{
+            height: 0;
+        }
+
+        .ui-jqgrid-labels{
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div class="col-md-2" style="width: 11%;padding-right: 0px;padding-left: 0px;">
+        <div style="margin-top: 10px">
+            <img :src="user.avatar" class="img-circle">
+            <div class="col-md-8" style="float: right;margin-top: 6px;">
+                <div style="word-break: break-all;">
+                    {{user.username==null ?'空':user.username}}
+                </div>
+                <div style="margin-top: 10px;padding-left: 0;" class="col-md-2" v-if="user.gender">
+                    <i  :class='user.gender==1?"fa fa-male text-primary":(user.gender==2?"fa fa-female text-danger":"") ' aria-hidden='true'></i>
+                </div>
+            </div>
+            <i class="clearfix"></i>
+        </div>
+
+        <div class="user-info" >
+
+            <div class="col-md-12">
+                <span class="fa">ROOT　：</span>{{mapInfo && mapInfo[0] && mapInfo[0].Root == 'true'?'是':'否'}}
+            </div>
+
+            <div class="col-md-12">
+                <span class="fa">模拟器　：</span>{{mapInfo && mapInfo[0] && mapInfo[0].emulator == 'true'?'是':'否'}}
+            </div>
+
+            <div class="col-md-12">
+                <span class="fa">健康状态：</span>{{ user.status == 'NORMAL' ? '正常': '不正常' }}
+            </div>
+
+            <div class="col-md-12">
+                <span class="fa">绑定手机：</span>{{user.phone?user.phone:'未绑定'}}
+            </div>
+
+            <div class="col-md-12">
+                <span class="fa">微信登录：</span>{{user.weixinBindOpenid?'是':'否'}}
+            </div>
+
+            <div class="col-md-12">
+                <span class="fa">支付宝登：</span>{{user.alipayBindOpenid?'是':'否'}}
+            </div>
+
+            <div class="col-md-12">
+                <span class="fa">出生日期：</span>{{user.birthday?user.birthday :'未设置'}}
+            </div>
+
+            <div class="col-md-12">
+                <span class="fa">注册时间：</span>{{user.createTime}}
+            </div>
+
+            <div class="col-md-12">
+                <span class="fa">邀请码　：</span>{{user.inviteCode?user.inviteCode:'无'}}
+            </div>
+            <div class="col-md-12" :title="user.finishNoviceTime">
+                <span class="fa">新手任务：</span>{{user.noviceTask ? '已完成': '未完成'}}
+            </div>
+
+            <div  class="col-md-12" style="padding-top: 10px;">
+
+                <div class="col-md-12">
+                    <span class="fa">今日金币：</span>{{userGold.today}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">剩余金币：</span>{{userGold.surplus}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">累计金币：</span>{{userGold.total}}
+                </div>
+
+            </div>
+
+            <div  class="col-md-12" style="padding-top: 10px;">
+
+                <div class="col-md-12">
+                    <span class="fa">微信钱包：</span>{{user.weixinPayOpenid ? user.weixinPayOpenid :'未绑定'}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">微信姓名：</span>{{user.weixinPayName ? user.weixinPayName :'未填写'}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">提现手机：</span>{{user.weixinPayPhone ? user.weixinPayPhone :'未填写'}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">支付宝账号：</span>{{user.alipayAccount ? user.alipayAccount :'未绑定'}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">支付宝姓名：</span>{{user.alipayName ? user.alipayName :'未绑定'}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">累计提现：</span>{{withdrawalsSum}}
+                </div>
+            </div>
+
+            <div class="col-md-12" v-if="user.disableFlag" style="padding-top: 10px;">
+                <div  class="col-md-12"><!--被禁用-->
+                    该用户被禁用 <i class="fa fa-times red"></i>
+                </div>
+                <div  class="col-md-12"><!--被禁用-->
+                    <span class="fa" > 禁用原因：</span>{{user.disableMsg==null ?'空':user.disableMsg}}
+                </div>
+
+                <div  class="col-md-12">
+                    <span class="fa">被禁时间：</span>{{user.disableTime==null ?'空':user.disableTime}}
+                </div>
+
+                <div  v-if="user.autoEnable" class="col-md-12"><!--被禁用-->
+                    <span class="fa">解禁时间：</span>{{user.autoEnableTime==null ?'空':user.autoEnableTime}}
+                </div>
+            </div><!--禁用-->
+
+            <div  class="col-md-12" style="padding-top: 10px;">
+                <div class="col-md-12">
+                    <span class="fa">最近操作：</span>{{lastAppLog.createTime}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">操作IP：</span>{{lastAppLog.ip}}
+                </div>
+
+                <div class="col-md-12">
+                    <span class="fa">操作地点：</span>{{lastLocation}}
+                </div>
+            </div>
+            <i class="clearfix"></i>
+        </div>
+    </div>
+
+    <div class="col-md-10" style="padding-right: 0px;padding-left: 0px;width: 89%;">
+        <div class=" col-md-6">
+            <div >
+                <div >
+                    提现情况（{{withdrawalsTodaySum}}/{{withdrawalsSum}}）
+                </div>
+                <div style="margin-top: 5px">
+                    <table id="withdrawalsJqGrid"></table>
+                    <div id="withdrawalsJqGridPager" ></div>
+                </div>
+            </div>
+            <div  style="margin-top: 20px">
+                <div>
+                    收徒情况（{{todayInviteCount}}/{{inviteTotal}}）
+                </div>
+
+                <div style="display: flex;font-size: 14px;margin-top: 5px;margin-bottom: 8px">
+                    <div v-if="mymaster">
+                        <span class="fa" :href="'javaScript:parent.showUserDetail('+mymaster.master+')'" style="cursor: pointer">我的师傅：<u>{{ mymaster.master }}</u></span>
+                        <span>　阅读贡献：</span>{{mymaster.readProfit}}　
+                        <span class="fa">累计贡献：</span>{{mymaster.profit}}　
+                        <span class="fa" v-if="mymaster.nextReward >= 0">待发放：</span>{{mymaster.waitGive}}　
+                        <span class="fa" v-if="mymaster.nextReward >= 0">下次发放：</span>第{{mymaster.nextReward}}次
+                    </div>
+                </div>
+
+                <div>
+                    <table id="apprenticeJqGrid"></table>
+                    <div id="apprenticeJqGridPager"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class=" col-md-6">
+            <div class="table-task">
+                <div>
+                    任务情况（{{userGold.today}}/{{userGold.total}}）
+                </div>
+
+                <div class="col-md-4">
+                    <span class="fa">阅读文章</span>（{{taskInfo.read.todaySum}}/{{taskInfo.read.sum}}）
+                </div>
+                <div class="col-md-4">
+                    <span class="fa">观看视频</span>（{{taskInfo.video.todaySum}}/{{taskInfo.video.sum}}）
+                </div>
+                <div class="col-md-4">
+                    <span class="fa">签到</span>（{{taskInfo.sign.todaySum}}/{{taskInfo.sign.sum}}）
+                </div>
+                <div class="col-md-4">
+                    <span class="fa">时段奖励</span>（{{taskInfo.time.todaySum}}/{{taskInfo.time.sum}}）
+                </div>
+                <div class="col-md-4">
+                    <span class="fa">邀请收益</span>（{{taskInfo.invitation.todaySum}}/{{taskInfo.invitation.sum}}）
+                </div>
+                <div class="col-md-4">
+                    <span class="fa">阅读提成</span>（{{taskInfo.readings.todaySum}}/{{taskInfo.readings.sum}}）
+                </div>
+                <div class="col-md-4">
+                    <span class="fa">其他类型</span>（{{taskInfo.other.todaySum}}/{{taskInfo.other.sum}}）
+                </div>
+
+                <div class="col-md-12">
+                    <!--v-model="q.diy_query_val"-->
+                    <input type="text" class="form-control "  id="time" placeholder="日期" style="width: 20%;z-index: 10000;position: absolute;margin-left: 480px;">
+                    <div style="width: 100%;height: 400px"  id="taskEcharts"></div>
+                </div>
+            </div>
+            <div>
+                <div class="col-md-12">
+                    <div>设备信息</div>
+                    <div style="height: 300px;overflow-y: scroll;">
+                        <div v-for="(list,index) in mapInfo" class="col-md-12" style="padding-left: 0px;margin-top: 8px">
+                            <a href='javascript:void(0)' @click="deviceInfo(index)" >
+                                {{list.BRAND}} &nbsp; {{list.MODEL}} （{{list.createTime}}）
+                            </a>
+                            (
+                                <a :href="'javaScript:parent.showUserDetail('+i+')'" style="color: #76828d;" v-for="i in list.Multiuser">
+                                    {{i}}
+                                </a>
+                            )
+                        </div>
+                        <i class="clearfix"></i>
+                    </div>
+                </div>
+                <!--<div class=" col-md-5">-->
+                    <!--<div>-->
+                        <!--最关注的栏目-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+    <div id="mapInfo" style="display: none">
+        <div class="tabs_item">
+            <table class="table table-hover">
+                <tr v-for="(key,value) in equipmentInfo">
+                    <td>{{value}}</td>
+                    <td style="word-break: break-all;">{{key}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="../../plugins/layer/laydate/laydate.js"></script>
+<script src="../../libs/echarts.min.js"></script>
+<script src="../../js/modules/admin/details.js"></script>
+</body>
+</html>
+

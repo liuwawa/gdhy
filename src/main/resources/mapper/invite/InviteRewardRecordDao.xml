@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.invite.dao.InviteRewardRecordDao">
+
+	<select id="queryOne" resultType="io.renren.modules.invite.entity.InviteRewardRecordEntity">
+		select * from tb_invite_reward_record where master = #{value} and `apprentice` = #{apprentice}
+	</select>
+
+	<select id="pageByMaster" resultType="io.renren.modules.invite.entity.InviteRewardRecordEntity">
+		select * from tb_invite_reward_record WHERE `master` = #{master} ORDER BY `create_time` DESC LIMIT #{a},#{b}
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.invite.entity.InviteRewardRecordEntity">
+		select * from tb_invite_reward_record
+		<where>
+			<if test="master != null and master != ''">
+				and `master` = #{master}
+			</if>
+			<if test="apprentice != null and apprentice != ''">
+				and `apprentice` = #{apprentice}
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `create_time` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_invite_reward_record
+		<where>
+			<if test="master != null and master != ''">
+				and `master` = #{master}
+			</if>
+			<if test="apprentice != null and apprentice != ''">
+				and `apprentice` = #{apprentice}
+			</if>
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.invite.entity.InviteRewardRecordEntity">
+		insert into tb_invite_reward_record
+		(
+			`master`, 
+			`apprentice`, 
+			`day`, 
+			`gold`, 
+			`reward_rule`, 
+			`create_time`,
+			`title`,
+			`describe`
+		)
+		values
+		(
+			#{master}, 
+			#{apprentice}, 
+			#{day}, 
+			#{gold}, 
+			#{rewardRule}, 
+			#{createTime},
+			#{title},
+			#{describe}
+		)
+	</insert>
+
+</mapper>

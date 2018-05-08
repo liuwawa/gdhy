@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.invite.dao.InviteRecordDao">
+
+	<select id="queryOne" resultType="io.renren.modules.invite.entity.InviteRecordEntity">
+		select * from tb_invite_record where master = #{value} AND `apprentice` = #{apprentice} AND `del_flag` = 0
+	</select>
+
+	<select id="queryByApprentice" resultType="io.renren.modules.invite.entity.InviteRecordEntity">
+		select * from tb_invite_record where `apprentice` = #{apprentice} AND `del_flag` = 0 LIMIT 1
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.invite.entity.InviteRecordEntity">
+		select * from tb_invite_record
+		<where>
+			AND `del_flag` = 0
+			<if test="master != null and master != ''">
+				and `master` = #{master}
+			</if>
+			<if test="apprentice != null and apprentice != ''">
+				and `apprentice` = #{apprentice}
+			</if>
+			<if test="inviteCode != null and inviteCode != ''">
+				and `invite_code` = #{inviteCode}
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `create_time` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+
+	</select>
+	
+	<select id="pageByMaster" resultType="io.renren.modules.invite.entity.InviteRecordEntity">
+		select * from tb_invite_record WHERE `master` = #{master} AND `del_flag` = 0
+		<if test="time != null">
+			AND TO_DAYS(`create_time`) = TO_DAYS(#{time})
+		</if>
+
+		ORDER BY `create_time` DESC
+		<if test="a!=null and b!=null">
+			LIMIT #{a},#{b}
+		</if>
+
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_invite_record
+		<where>
+			AND `del_flag` = 0
+			<if test="master != null and master != ''">
+				and `master` = #{master}
+			</if>
+			<if test="apprentice != null and apprentice != ''">
+				and `apprentice` = #{apprentice}
+			</if>
+			<if test="inviteCode != null and inviteCode != ''">
+				and `invite_code` = #{inviteCode}
+			</if>
+		</where>
+	</select>
+
+ 	<select id="totalProfit" resultType="int">
+		select sum(`profit`) from tb_invite_record where `master` = #{master}
+	</select>
+	
+	<select id="SummaryInvitationsNum" resultType="int">
+		select count(*) from tb_invite_record where `del_flag`=0 and `create_time` BETWEEN #{startTime} AND #{endTime}
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.invite.entity.InviteRecordEntity">
+		insert into tb_invite_record
+		(
+			`master`, 
+			`apprentice`, 
+			`create_time`, 
+			`profit`, 
+			`gave`, 
+			`wait_give`, 
+			`title`, 
+			`invite_code`, 
+			`reward_rule`, 
+			`next_reward`, 
+			`last_reward_date`, 
+			`del_flag`,
+			`read_profit`
+		)
+		values
+		(
+			#{master}, 
+			#{apprentice}, 
+			#{createTime}, 
+			#{profit}, 
+			#{gave}, 
+			#{waitGive}, 
+			#{title}, 
+			#{inviteCode}, 
+			#{rewardRule}, 
+			#{nextReward}, 
+			#{lastRewardDate}, 
+			#{delFlag},
+			#{readProfit}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.modules.invite.entity.InviteRecordEntity">
+		update tb_invite_record 
+		<set>
+			<if test="profit != null">`profit` = #{profit}, </if>
+			<if test="gave != null">`gave` = #{gave}, </if>
+			<if test="waitGive != null">`wait_give` = #{waitGive}, </if>
+			<if test="title != null">`title` = #{title}, </if>
+			<if test="nextReward != null">`next_reward` = #{nextReward}, </if>
+			<if test="lastRewardDate != null">`last_reward_date` = #{lastRewardDate}, </if>
+			<if test="readProfit != null">`read_profit` = #{readProfit}, </if>
+		</set>
+		where master = #{master} AND apprentice = #{apprentice}
+	</update>
+	
+	<update id="delete">
+		update tb_invite_record set `del_flag` = 1 where master = #{value}
+	</update>
+	
+	<update id="deleteBatch">
+        update tb_invite_record set `del_flag` = 1 where apprentice in
+		<foreach item="apprentice" collection="array" open="(" separator="," close=")">
+			#{apprentice}
+		</foreach>
+	</update>
+
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.EverydaySignDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.EverydaySignEntity">
+		select * from tb_everyday_sign where days = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.EverydaySignEntity">
+		select * from tb_everyday_sign
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `days` ASC
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_everyday_sign
+	</select>
+
+	<select id="querySignRecord" resultType="io.renren.modules.api.entity.SignRecord">
+		SELECT * FROM `tb_sign_record` WHERE `user_id` = #{value}
+	</select>
+
+	<insert id="createNewEntity">
+		INSERT INTO `tb_sign_record` (`user_id`) VALUES (#{value})
+	</insert>
+
+	<update id="update" parameterType="io.renren.modules.admin.entity.EverydaySignEntity">
+		update tb_everyday_sign 
+		<set>
+			<if test="reward != null">`reward` = #{reward}, </if>
+			<if test="modifyTime != null">`modify_time` = #{modifyTime}, </if>
+			<if test="modifyUser != null">`modify_user` = #{modifyUser}</if>
+		</set>
+		where days = #{days}
+	</update>
+
+</mapper>

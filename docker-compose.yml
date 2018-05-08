@@ -1,0 +1,20 @@
+api-1:
+  image: daocloud.io/library/java:openjdk-8u40
+  expose:
+    - "443"
+  environment:
+    - VIRTUAL_HOST=app.v1.dzkandian.com
+    - LANG=en_US.UTF-8
+    - JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Duser.timezone=GMT+8 -Djava.security.egd=file:/dev/./urandom
+    - spring.profiles.active=beta
+    - server.port=443
+    - server.ssl.enabled=false
+  working_dir: /files
+  command: java -jar api.jar
+  restart: always
+  external_links:
+   - mysql_db_1:mysql
+   - redis_db_1:redis
+  volumes:
+    - ./target/temp.jar:/files/api.jar:ro
+    - /data/wxcert/apiclient_cert.p12:/data/wxcert/apiclient_cert.p12:ro

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.api.dao.UserDao">
+
+	<insert id="save" parameterType="io.renren.modules.api.entity.UserEntity" useGeneratedKeys="true" keyProperty="userId">
+		insert into tb_user
+		(
+			`username`,
+			`phone`,
+			`password`,
+			`salt`,
+			`invite_code`,
+			`avatar`,
+			`gender`,
+			`birthday`,
+			`status`,
+			`alipay_account`,
+			`alipay_name`,
+			`weixin_pay_name`,
+			`weixin_pay_phone`,
+			`weixin_pay_openid`,
+			`weixin_pay_nickname`,
+			`weixin_pay_avatar`,
+			`create_time`,
+			`modify_time`,
+			`disable_flag`,
+			`disable_msg`,
+			`disable_time`,
+			`auto_enable`,
+			`auto_enable_time`,
+			`weixin_bind_openid`,
+			`alipay_bind_openid`,
+			`device_id`,
+			`novice_task`,
+			`finish_novice_time`,
+			`del_flag`
+		)
+		values
+			(
+			#{username},
+			#{phone},
+			#{password},
+			#{salt},
+			#{inviteCode},
+			#{avatar},
+			#{gender},
+			#{birthday},
+			#{status},
+			#{alipayAccount},
+			#{alipayName},
+			#{weixinPayName},
+			#{weixinPayPhone},
+			#{weixinPayOpenid},
+			#{weixinPayNickname},
+			#{weixinPayAvatar},
+			#{createTime},
+			#{modifyTime},
+			#{disableFlag},
+			#{disableMsg},
+			#{disableTime},
+			#{autoEnable},
+			#{autoEnableTime},
+			#{weixinBindOpenid},
+			#{alipayBindOpenid},
+			#{deviceId},
+			#{noviceTask},
+			#{finishNoviceTime},
+			#{delFlag}
+			)
+	</insert>
+
+
+
+	<update id="update" parameterType="io.renren.modules.api.entity.UserEntity">
+		update tb_user
+		<set>
+			<if test="username != null">`username` = #{username}, </if>
+			<if test="phone != null">`phone` = #{phone}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="salt != null">`salt` = #{salt}, </if>
+			<if test="inviteCode != null">`invite_code` = #{inviteCode}, </if>
+			<if test="avatar != null">`avatar` = #{avatar}, </if>
+			<if test="gender != null">`gender` = #{gender}, </if>
+			<if test="birthday != null">`birthday` = #{birthday}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="alipayAccount != null">`alipay_account` = #{alipayAccount}, </if>
+			<if test="alipayName != null">`alipay_name` = #{alipayName}, </if>
+			<if test="weixinPayName != null">`weixin_pay_name` = #{weixinPayName}, </if>
+			<if test="weixinPayPhone != null">`weixin_pay_phone` = #{weixinPayPhone}, </if>
+			<if test="weixinPayOpenid != null">`weixin_pay_openid` = #{weixinPayOpenid}, </if>
+			<if test="weixinPayNickname != null">`weixin_pay_nickname` = #{weixinPayNickname}, </if>
+			<if test="weixinPayAvatar != null">`weixin_pay_avatar` = #{weixinPayAvatar}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="modifyTime != null">`modify_time` = #{modifyTime}, </if>
+			<if test="disableFlag != null">`disable_flag` = #{disableFlag}, </if>
+			<if test="disableMsg != null">`disable_msg` = #{disableMsg}, </if>
+			<if test="disableTime != null">`disable_time` = #{disableTime}, </if>
+			<if test="autoEnable != null">`auto_enable` = #{autoEnable}, </if>
+			<if test="autoEnableTime != null">`auto_enable_time` = #{autoEnableTime}, </if>
+			<if test="weixinBindOpenid != null">`weixin_bind_openid` = #{weixinBindOpenid}, </if>
+			<if test="alipayBindOpenid != null">`alipay_bind_openid` = #{alipayBindOpenid}, </if>
+			<if test="deviceId != null">`device_id` = #{deviceId}, </if>
+			<if test="noviceTask != null">`novice_task` = #{noviceTask}, </if>
+			<if test="finishNoviceTime != null">`finish_novice_time` = #{finishNoviceTime}, </if>
+		</set>
+		where user_id = #{userId}
+	</update>
+
+	<select id="queryList" resultType="io.renren.modules.api.entity.UserEntity">
+		select * from tb_user where del_flag = 0
+		<if test="diy_query_val != null and diy_query_val.trim() != '' and diy_query_key != null and diy_query_key.trim() != ''">
+			and `${diy_query_key}` LIKE  #{diy_query_val}
+		</if>
+		<choose>
+			<when test="sidx != null and sidx.trim() != ''">
+				order by ${sidx} ${order}
+			</when>
+			<otherwise>
+				order by modify_time desc
+			</otherwise>
+		</choose>
+
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="queryTotal" resultType="int">
+		select count(*) from tb_user  where  del_flag = 0
+	</select>
+
+	<select id="queryObject" resultType="io.renren.modules.api.entity.UserEntity">
+		select * from tb_user where user_id = #{value} and del_flag = 0
+	</select>
+
+	<select id="queryByPhone" resultType="io.renren.modules.api.entity.UserEntity">
+		select * from tb_user where phone = #{value} and del_flag = 0
+	</select>
+
+	<select id="queryByWeChat" resultType="io.renren.modules.api.entity.UserEntity">
+		SELECT * FROM tb_user WHERE weixin_bind_openid= #{value} and del_flag = 0
+	</select>
+
+	<select id="queryByAlipay" resultType="io.renren.modules.api.entity.UserEntity">
+		SELECT * FROM tb_user WHERE alipay_bind_openid= #{value} and del_flag = 0
+	</select>
+
+	<update id="delete">
+		UPDATE tb_user set del_flag = 1 where user_id = #{value}
+	</update>
+
+	<update id="deleteBatch" parameterType="int">
+		UPDATE tb_user set del_flag = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+</mapper>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.TaskListDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.TaskListEntity">
+		select * from tb_task_list where id = #{value} and `del_flag` = 0
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.TaskListEntity">
+		select * from tb_task_list where `del_flag` = 0
+		<if test="name != null and name.trim() != ''">
+			and `name` like concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `type` asc,`sort` asc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_task_list where `del_flag` = 0
+		<if test="name != null and name.trim() != ''">
+			and `name` like concat('%',#{name},'%')
+		</if>
+	</select>
+
+	<select id="queryNoviceList" resultType="io.renren.modules.admin.entity.TaskListEntity">
+		SELECT * FROM tb_task_list WHERE `del_flag` = 0 AND `activated` = 1 AND `type` = 'novice' AND (
+		(`open_time` IS NULL AND `end_time` IS NULL) OR
+		(`open_time` IS NOT NULL AND `end_time` IS NOT NULL AND CURRENT_TIMESTAMP BETWEEN `open_time` AND `end_time`) OR
+		(`open_time` IS NULL AND `end_time` > CURRENT_TIMESTAMP) OR
+		(`end_time` IS NULL AND CURRENT_TIMESTAMP > `open_time`)
+		)  ORDER BY `sort` ASC
+	</select>
+
+	<select id="queryDailyList" resultType="io.renren.modules.admin.entity.TaskListEntity">
+		SELECT * FROM tb_task_list WHERE `del_flag` = 0 AND `activated` = 1 AND `type` = 'daily' AND (
+		(`open_time` IS NULL AND `end_time` IS NULL) OR
+		(`open_time` IS NOT NULL AND `end_time` IS NOT NULL AND CURRENT_TIMESTAMP BETWEEN `open_time` AND `end_time`) OR
+		(`open_time` IS NULL AND `end_time` > CURRENT_TIMESTAMP) OR
+		(`end_time` IS NULL AND CURRENT_TIMESTAMP > `open_time`)
+		) ORDER BY `sort` ASC
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.admin.entity.TaskListEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_task_list
+		(
+			`name`, 
+			`type`, 
+			`activated`,
+			`gold_max`,
+			`gold_mini`, 
+			`icon`, 
+			`profit`, 
+			`btn_url`, 
+			`describe`, 
+			`btn_text`, 
+			`event`, 
+			`open_time`, 
+			`end_time`, 
+			`duration`, 
+			`rersion`, 
+			`sort`, 
+			`create_time`, 
+			`create_user`, 
+			`modify_time`, 
+			`modify_user`, 
+			`del_flag`
+		)
+		values
+		(
+			#{name}, 
+			#{type}, 
+			#{activated},
+			#{goldMax},
+			#{goldMini}, 
+			#{icon}, 
+			#{profit}, 
+			#{btnUrl}, 
+			#{describe}, 
+			#{btnText}, 
+			#{event}, 
+			#{openTime}, 
+			#{endTime}, 
+			#{duration}, 
+			#{rersion}, 
+			#{sort}, 
+			#{createTime}, 
+			#{createUser}, 
+			#{modifyTime}, 
+			#{modifyUser}, 
+			#{delFlag}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.modules.admin.entity.TaskListEntity">
+		update tb_task_list 
+		<set>
+			`name` = #{name},
+			`type` = #{type},
+			`activated` = #{activated},
+			`gold_max` = #{goldMax},
+			`gold_mini` = #{goldMini},
+			`icon` = #{icon},
+			`profit` = #{profit},
+			`btn_url` = #{btnUrl},
+			`describe` = #{describe},
+			`btn_text` = #{btnText},
+			`event` = #{event},
+			`open_time` = #{openTime},
+			`end_time` = #{endTime},
+			`duration` = #{duration},
+			`rersion` = #{rersion},
+			`sort` = #{sort},
+			`create_time` = #{createTime},
+			`create_user` = #{createUser},
+			`modify_time` = #{modifyTime},
+			`modify_user` = #{modifyUser},
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="delete">
+		update tb_task_list set `del_flag` = 1 where id = #{value}
+	</update>
+	
+	<update id="deleteBatch">
+        update tb_task_list set `del_flag` = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+</mapper>

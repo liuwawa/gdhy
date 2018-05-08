@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.AppLogDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.AppLogEntity">
+		select * from `tb_app_log` where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.AppLogEntity">
+		select * from `tb_app_log`
+		<where>
+			<if test="type != null and type.trim() != ''">
+				`type` = #{type}
+			</if>
+			<if test="user != null and user.trim() != ''">
+				and `user` = #{user}
+			</if>
+			<if test="ip != null and ip.trim() != ''">
+				and `ip` = #{ip}
+			</if>
+			<if test="level != null and level.trim() != ''">
+				and `level` > #{level}
+			</if>
+			<if test="operation != null and operation.trim() != ''">
+				and `operation` = #{operation}
+			</if>
+			<if test="describe != null and describe.trim() != ''">
+				and `describe` like describe('%',#{describe},'%')
+			</if>
+			<if test="app_id != null and app_id.trim() != ''">
+				and `app_id` = #{app_id}
+			</if>
+			<if test="instance_id != null and instance_id.trim() != ''">
+				and `instance_id` = #{instance_id}
+			</if>
+			<if test="remarks != null and remarks.trim() != ''">
+				and `remarks` like remarks('%',#{remarks},'%')
+			</if>
+			<if test="id != null and id.trim() != ''">
+				and `id` = #{id}
+			</if>
+			<if test="input_date_a != null and input_date_b != null and input_date_a.trim() != '' and input_date_b.trim() != ''">
+				and `create_time` BETWEEN #{input_date_a} AND #{input_date_b}
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `create_time` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from `tb_app_log`
+		<where>
+			<if test="type != null and type.trim() != ''">
+				`type` = #{type}
+			</if>
+			<if test="id != null and id.trim() != ''">
+				and `id` = #{id}
+			</if>
+			<if test="user != null and user.trim() != ''">
+				and `user` = #{user}
+			</if>
+			<if test="ip != null and ip.trim() != ''">
+				and `ip` = #{ip}
+			</if>
+			<if test="level != null and level.trim() != ''">
+				and `level` > #{level}
+			</if>
+			<if test="operation != null and operation.trim() != ''">
+				and `operation` = #{operation}
+			</if>
+			<if test="describe != null and describe.trim() != ''">
+				and `describe` like describe('%',#{describe},'%')
+			</if>
+			<if test="app_id != null and app_id.trim() != ''">
+				and `app_id` = #{app_id}
+			</if>
+			<if test="instance_id != null and instance_id.trim() != ''">
+				and `instance_id` = #{instance_id}
+			</if>
+			<if test="remarks != null and remarks.trim() != ''">
+				and `remarks` like remarks('%',#{remarks},'%')
+			</if>
+			<if test="input_date_a != null and input_date_b != null and input_date_a.trim() != '' and input_date_b.trim() != ''">
+				and `create_time` BETWEEN #{input_date_a} AND #{input_date_b}
+			</if>
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.modules.admin.entity.AppLogEntity">
+		insert into `tb_app_log`
+		(
+			`id`, 
+			`type`, 
+			`user`, 
+			`ip`, 
+			`level`, 
+			`operation`, 
+			`describe`, 
+			`app_id`, 
+			`instance_id`, 
+			`remarks`, 
+			`create_time`
+		)
+		values
+		(
+			#{id}, 
+			#{type}, 
+			#{user}, 
+			#{ip}, 
+			#{level}, 
+			#{operation}, 
+			#{describe}, 
+			#{appId}, 
+			#{instanceId}, 
+			#{remarks}, 
+			#{createTime}
+		)
+	</insert>
+
+</mapper>

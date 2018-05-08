@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.stats.dao.TaskStatsDao">
+
+	<select id="queryObject" resultType="io.renren.modules.stats.entity.TaskStatsEntity">
+		select * from tb_task_stats where id = #{value} and `del_flag` = 0
+	</select>
+
+	<select id="queryTaskTypeRecordByTime" resultType="io.renren.modules.stats.entity.TaskActive">
+		SELECT `type`,count(`type`) total,sum(`reward`) increase FROM tb_task_record WHERE `id` BETWEEN #{a} AND #{b} GROUP BY `type`;
+	</select>
+
+	<select id="sumTaskActiveFromStats" resultType="io.renren.modules.stats.entity.TaskActive">
+		SELECT task_id `type`,SUM(total) total,sum(`increase`) increase FROM tb_task_stats WHERE `type` = #{type} AND `than_day` BETWEEN #{a} AND #{b} GROUP BY task_id;
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.stats.entity.TaskStatsEntity">
+		select * from tb_task_stats where `del_flag` = 0
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `id` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_task_stats where `del_flag` = 0
+	</select>
+
+	<select id="RangeByHour" resultType="io.renren.modules.stats.entity.TaskStatsEntity">
+		select * from tb_task_stats WHERE `type` = #{type} AND than_day BETWEEN #{a} AND #{b} AND than_hour BETWEEN #{hours} AND #{hours1};
+	</select>
+
+	<select id="RangeByCustom" resultType="io.renren.modules.stats.entity.TaskStatsEntity">
+		select * from tb_task_stats WHERE `type` = #{type} AND ${field} BETWEEN #{a} AND #{b};
+	</select>
+
+	<insert id="save" parameterType="io.renren.modules.stats.entity.TaskStatsEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_task_stats
+		(
+			`type`, 
+			`than_hour`, 
+			`than_day`, 
+			`than_month`, 
+			`than_year`, 
+			`create_time`, 
+			`task_id`, 
+			`total`, 
+			`gold`, 
+			`increase`, 
+			`compairson`
+		)
+		values
+		(
+			#{type}, 
+			#{thanHour}, 
+			#{thanDay}, 
+			#{thanMonth}, 
+			#{thanYear}, 
+			#{createTime}, 
+			#{taskId}, 
+			#{total}, 
+			#{gold}, 
+			#{increase}, 
+			#{compairson}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.modules.stats.entity.TaskStatsEntity">
+		update tb_task_stats 
+		<set>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="thanHour != null">`than_hour` = #{thanHour}, </if>
+			<if test="thanDay != null">`than_day` = #{thanDay}, </if>
+			<if test="thanMonth != null">`than_month` = #{thanMonth}, </if>
+			<if test="thanYear != null">`than_year` = #{thanYear}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="taskId != null">`task_id` = #{taskId}, </if>
+			<if test="total != null">`total` = #{total}, </if>
+			<if test="gold != null">`gold` = #{gold}, </if>
+			<if test="increase != null">`increase` = #{increase}, </if>
+			<if test="compairson != null">`compairson` = #{compairson}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="delete">
+		update tb_task_stats set `del_flag` = 1 where id = #{value}
+	</update>
+	
+	<update id="deleteBatch">
+        update tb_task_stats set `del_flag` = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+</mapper>

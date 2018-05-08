@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.admin.dao.TaskRecordDao">
+
+	<select id="queryObject" resultType="io.renren.modules.admin.entity.TaskRecordEntity">
+		select * from tb_task_record where `id` = #{id} and `user_id` = #{userId}
+	</select>
+
+	<select id="queryByUser" resultType="io.renren.modules.admin.entity.TaskRecordEntity">
+		select * from tb_task_record where `user_id` = #{userId}
+		<if test="typeId != null and typeId != 0">
+			AND `type` = #{typeId}
+		</if>
+		ORDER BY `id` DESC limit #{a},#{b}
+	</select>
+
+	<select id="queryList" resultType="io.renren.modules.admin.entity.TaskRecordEntity">
+		select * from tb_task_record
+		<where>
+			<if test="userId != null and userId.trim() != ''">
+				and `user_id` = #{userId}
+			</if>
+			<if test="id != null and id.trim() != ''">
+				and `id` = #{id}
+			</if>
+			<if test="typeId != null and typeId.trim() != ''">
+				and `type` = #{typeId}
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by `${sidx}` ${order}
+            </when>
+			<otherwise>
+                order by `id` desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="querySumReward" resultType="int">
+		SELECT sum(`reward`) FROM `tb_task_record` where `user_id`=#{user_id}
+		<if test="types!=null">
+			and `type` in
+			<foreach item="type" collection="types" open="(" separator="," close=")">
+				#{type}
+			</foreach>
+		</if>
+		<choose>
+			<when test="timeB!=null">
+				AND `id` Between #{time} AND #{timeB}
+			</when>
+			<otherwise>
+				<if test="time != null and time!= ''">
+					AND to_days(`id`)=to_days(#{time})
+				</if>
+			</otherwise>
+		</choose>
+
+	</select>
+
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_task_record
+		<where>
+			<if test="userId != null and userId.trim() != ''">
+				and `user_id` = #{userId}
+			</if>
+			<if test="id != null and id.trim() != ''">
+				and `id` = #{id}
+			</if>
+			<if test="typeId != null and typeId.trim() != ''">
+				and `type` = #{typeId}
+			</if>
+		</where>
+	</select>
+
+	<select id="dailyFinishIdList" resultType="java.lang.Integer">
+		SELECT `tid` FROM `tb_daily_record` WHERE `uid` = #{value} AND `rq` = CURRENT_DATE
+	</select>
+
+	<select id="noviceFinishIdList" resultType="java.lang.Integer">
+		SELECT `tid` FROM `tb_novice_record` WHERE `uid` = #{value}
+	</select>
+
+	<select id="saveBaseTask" statementType="CALLABLE">
+		call add_gold_and_record_base_task(
+		#{id,jdbcType=TIMESTAMP,mode=IN},
+		#{userId,jdbcType=BIGINT,mode=IN},
+		#{type,jdbcType=INTEGER,mode=IN},
+		#{reward,jdbcType=INTEGER,mode=IN},
+		#{describe,jdbcType=VARCHAR,mode=IN},
+		#{timeLimit,jdbcType=TIMESTAMP,mode=IN},
+		#{result,jdbcType=INTEGER,mode=OUT})
+	</select>
+
+	<select id="saveDailyTask" statementType="CALLABLE">
+		call add_gold_and_record_daily_task(
+		#{id,jdbcType=TIMESTAMP,mode=IN},
+		#{userId,jdbcType=BIGINT,mode=IN},
+		#{type,jdbcType=INTEGER,mode=IN},
+		#{reward,jdbcType=INTEGER,mode=IN},
+		#{describe,jdbcType=VARCHAR,mode=IN},
+		#{timeLimit,jdbcType=TIMESTAMP,mode=IN},
+		#{result,jdbcType=INTEGER,mode=OUT})
+	</select>
+
+	<select id="saveNoviceTask" statementType="CALLABLE">
+		call add_gold_and_record_novice_task(
+		#{id,jdbcType=TIMESTAMP,mode=IN},
+		#{userId,jdbcType=BIGINT,mode=IN},
+		#{type,jdbcType=INTEGER,mode=IN},
+		#{reward,jdbcType=INTEGER,mode=IN},
+		#{describe,jdbcType=VARCHAR,mode=IN},
+		#{timeLimit,jdbcType=TIMESTAMP,mode=IN},
+		#{result,jdbcType=INTEGER,mode=OUT})
+	</select>
+
+	<select id="saveSignTask" statementType="CALLABLE">
+		call add_gold_and_record_sign_task(
+		#{id,jdbcType=TIMESTAMP,mode=IN},
+		#{userId,jdbcType=BIGINT,mode=IN},
+		#{type,jdbcType=INTEGER,mode=IN},
+		#{reward,jdbcType=INTEGER,mode=IN},
+		#{describe,jdbcType=VARCHAR,mode=IN},
+		#{result,jdbcType=INTEGER,mode=OUT})
+	</select>
+
+</mapper>

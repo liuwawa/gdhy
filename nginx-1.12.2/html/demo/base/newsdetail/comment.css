@@ -1,0 +1,87 @@
+.comment-container{
+            height: 200px;
+            width: 100%;
+        }
+        .comment-container .comment-list{
+			display: fixed;
+            height: 100px;
+            width: 100%;
+            list-style-type: none;
+			flex-basis: 0%;
+        }
+        .comment-container .comment-list li{
+            padding: 20px 5px 5px 5px;
+            border-bottom: .05px solid #DDDDDD;
+            box-sizing: border-box;
+			display: flex;
+			flex-direction: column;
+			flex-basis: 0%;
+			
+        }
+        .comment-container .box-top{
+            height: 50px;
+            display: flex;
+            flex-direction:row;
+            flex-basis: 0%;
+            /*flex-wrap:nowrap;*/
+            justify-content:space-between;
+        }
+        .comment-container .box-top .user-msg{
+            /*width: auto;*/
+            height: 100%;
+            display: flex;
+            flex-direction:row;
+        }
+        .comment-container .box-top .head-portrait{
+            height: 100%;
+        }
+        .comment-container .head-portrait img{
+            height: 100%;
+            border-radius: 50%;
+        }
+        .comment-container .msg{
+            margin-left: 10px;
+        }
+        .comment-container .msg .name{
+            font-size: 13px;
+        }
+        .comment-container .msg .time{
+            margin-top: 10px;
+            font-size: 8px;
+            font-weight: 200;
+        }
+        .comment-container .box-top .praise{
+            display: flex;
+            flex-wrap:nowrap;
+           /* align-items:flex-end;
+            align-self:flex-start;*/
+			align-items:flex-start;
+        }
+        .comment-container .box-top .praise i{
+            font-size: 20px;
+        }
+        .comment-container .box-top .praise span{
+            /*display: inline-block;*/
+            margin-left: 5px;
+            font-size: 14px;
+            font-weight: 200;
+        }
+        .comment-container .box-bottom{
+            height: auto;
+            margin: 5px 0 10px 60px;
+        }
+        .comment-container .box-bottom .comments{
+			
+            /*font-size: 13px;
+            font-weight: 200;*/
+			
+		display:block;            /*内联对象需加*/  
+    word-break:keep-all;      /* 不换行 */  
+    white-space:nowrap;       /* 不换行 */  
+    overflow:hidden;          /* 内容超出宽度时隐藏超出部分的内容 */  
+    text-overflow:ellipsis;   /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/  
+
+				
+        }
+		
+		.comment-container .totop{z-index:9990;right:10px;bottom:30px;width:36px;height:36px;border-radius:50%;position: fixed;}

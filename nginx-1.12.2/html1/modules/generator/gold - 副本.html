@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>金币管理</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../../css/main.css">
+<script src="../../libs/jquery.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../libs/bootstrap.min.js"></script>
+<script src="../../libs/vue.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="../../js/common.js"></script>
+
+<style>
+			* {
+				font-family: simhei, Helvetica, Arial, sans-serif;
+			}
+
+			#dialog-template{
+				display: none;
+			}			
+			
+			.btn {
+				display: inline-block;
+				border: 0;
+				box-sizing: border-box;
+				background: #cb4a70;
+				color: #fff;
+				font-size: 1.5em;
+				border-radius: .1em;
+				line-height: 2em;
+				padding: 0 1em;
+				transition: .4s ease-out;
+				border: 1px solid #cb4a70;
+				outline: 0;
+				text-decoration: none;
+			}
+			
+			.btn:hover,
+			.btn:focus {
+				background: #fff;
+				color: #cb4a70;
+				cursor: pointer;
+				transition: .15s ease-in;
+			}
+			
+			.btn-open {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				-webkit-transform: translate(-50%, -50%);
+				-ms-transform: translate(-50%, -50%);
+				-o-transform: translate(-50%, -50%);
+				transform: translate(-50%, -50%);
+			}
+			
+			.dialog {
+				width: 480px;
+				position: fixed;
+				left: 50%;
+				top: 2em;
+				transform: translateX(-50%);
+				z-index: 2000;
+				visibility: hidden;
+				backface-visibility: hidden;
+				perspective: 1300px;
+			}
+			
+			.dialog-active {
+				visibility: visible;
+			}
+			
+			.dialog-active .dialog-content {
+				position: relative;
+				opacity: 1;
+				transform: rotateY(0);
+			}
+			
+			.dialog-active ~ .dialog-overlay {
+				opacity: 1;
+				visibility: visible;
+			}
+			
+			.dialog-content {
+				border-radius: 3px;
+				background: #fff;
+				overflow: hidden;
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+				transition: .5s ease-in-out;
+				opacity: 0;
+				transform-style: preserve-3d;
+				transform: rotateY(-70deg);
+			}
+			
+			.dialog-header {
+				background: #cb4a70;
+				color: #fff;
+			}
+			
+			.dialog-title {
+				margin: 0;
+				font-size: 2em;
+				text-align: center;
+				font-weight: 200;
+				line-height: 2em;
+			}
+			
+			.dialog-body {
+				padding: 2em;
+			}
+			
+			.dialog-footer {
+				margin: 0 2em;
+				padding: 2em 0;
+				text-align: right;
+				border-top: 1px solid rgba(0, 0, 0, 0.1);
+			}
+			
+			.dialog-overlay {
+				content: "";
+				position: fixed;
+				visibility: hidden;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				z-index: 1000;
+				opacity: 0;
+				background: rgba(0, 0, 0, 0.5);
+				transition: all .6s;
+			}
+			
+			.close {
+				display: inline-block;
+				width: 2rem;
+				height: 2rem;
+				position: absolute;
+				top: .5rem;
+				right: .5rem;
+				transition: .8s ease all;
+				-moz-transition: .8s ease all;
+				-webkit-transition: .8s ease all;
+				border: none;
+				border-radius: 3px;
+				color: #333;
+				text-decoration: none;
+				box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+			}
+			
+			.close:hover {
+				transition: .8s ease all;
+				-moz-transition: .8s ease all;
+				-webkit-transition: .8s ease all;
+			}
+			
+			.close .iconfont {
+				font-size: 2rem;
+				color: #fff;
+			}
+			
+			.rotate {
+				cursor: pointer;
+			}
+			
+			.rotate:hover {
+				transform: rotate(360deg);
+				-moz-transform: rotate(360deg);
+				-webkit-transform: rotate(360deg);
+				transition: transform 1.0s ease all;
+				-moz-transition: -moz-transform 1.0s ease all;
+				-webkit-transition: -webkit-transform 1.0s ease all;
+			}
+		</style>
+
+
+
+
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<a v-if="hasPermission('generator:gold:save')" class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			<a v-if="hasPermission('generator:gold:update')" class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			<a v-if="hasPermission('generator:gold:delete')" class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    
+	
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+											<div class="form-group">
+			   	<div class="col-sm-2 control-label">剩余金币</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="gold.surplusGold" placeholder="剩余金币"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">总金币</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="gold.total" placeholder="总金币"/>
+			    </div>
+			</div>
+									<div class="form-group">
+			   	<div class="col-sm-2 control-label">用户id</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="gold.userId" placeholder=""/>
+			    </div>
+			</div>
+							<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+	
+	
+	
+	
+	
+</div>
+
+
+<script src="../../js/modules/generator/gold.js"></script>
+
+
+
+
+</body>
+</html>
